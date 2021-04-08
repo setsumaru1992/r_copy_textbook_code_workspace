@@ -115,6 +115,13 @@ sales_population <- read_csv("reference_files/2-9-3-sales-population.csv")
 sales_population %>% 
   mutate(log_beef = log(beef)) # カラム作成
 
+## データの結合
+tbl_sales <- read_csv("reference_files/4-7-4-tbl-sales.csv")
+tbl_product <- read_csv("reference_files/4-7-5-tbl-product.csv")
+
+tbl_sales %>% 
+  inner_join(tbl_product, by = c("product_id" = "id")) # ON tbl_product.product_id = tbl_sales.id
+
 
 
 # ベクトル
@@ -147,6 +154,41 @@ df_crab$sex
 head(df_crab, n=2)
 names(df_crab) # "sex"            "sell_width"     "scissors_width"
 subset(df_crab, subset = df_crab$sex == "male")
+
+
+
+# 日付、日時
+date_ymd <- ymd("20210408")
+datetime_ymdhms <- ymd_hms("20210408214916")
+make_date(year = 2021, month = 4, day = 8)
+
+year(date_ymd)
+date_ymd %>% year()
+
+datetime_ymdhms # "2021-04-08 21:49:16 UTC"
+month(datetime_ymdhms) <- 10
+datetime_ymdhms # "2021-10-08 21:49:16 UTC"
+
+## 日時を扱えるPOSIXct。POSIXltもあるが、POSIXctが主流
+as.POSIXct("2019-02-03 10:20:05")
+
+
+# ビジュアライズ
+## 基本
+sales_beef <- read_csv("reference_files/2-9-1-sales-beef.csv")
+sales_beef %>% print(n=3)
+
+ggplot(data = sales_beef) + # ggplotは場の用意で"+"で描画方法の指定
+  geom_histogram( # ベースの描画手法は"geom_xxx"。xxxにhistogramやlineが入る
+    mapping = aes(x = beef),
+    bins = 3,
+    alpha = 0.7,
+    colour = "black"
+  ) +
+  labs(title = "titleeeee") +
+  xlab("Xxxxxxx") +
+  ylab("Yyyyyy")
+
 
 
 # 型
