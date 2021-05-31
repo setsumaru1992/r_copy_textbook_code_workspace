@@ -24,3 +24,9 @@ sales_meat %>%
 sales_population <- read_csv("reference_files/2-9-3-sales-population.csv")
 sales_population %>% 
   mutate(log_beef = log(beef)) # カラム作成
+
+sales_meat %>% 
+  group_by(category) %>%
+  # summarise(sales_mean = mean(sales)) %>%
+  ungroup() %>%
+  summarise(mean = mean(sales))

@@ -47,6 +47,9 @@ tbl_crab <- tibble(
 )
 write_csv(tbl_crab, file = "crab-tbl.csv")
 
+### 中間データの保存ならRDS形式もあり。型を保持した状態で復元できる。
+write_rds(tbl_crab, file = "crab-tbl.rds")
+
 # df_crab <- data.frame(
 #   sex = rep(c("male", "female"), each = 3),
 #   sell_width = c(13,14,14,6,7,6),
@@ -118,6 +121,17 @@ sales_meat %>%
 sales_population <- read_csv("reference_files/2-9-3-sales-population.csv")
 sales_population %>% 
   mutate(log_beef = log(beef)) # カラム作成
+
+### 集計
+sales_meat %>% 
+  group_by(category) %>%
+  summarise(sales_mean = mean(sales))
+
+#### グループ化解除 ungroupはまだあまりわかってない
+sales_meat %>% 
+  group_by(category) %>%
+  ungroup() %>%
+  summarise(mean = mean(sales))
 
 ## データの結合
 tbl_sales <- read_csv("reference_files/4-7-4-tbl-sales.csv")
@@ -193,7 +207,15 @@ ggplot(data = sales_beef) + # ggplotは場の用意で"+"で描画方法の指�
   xlab("Xxxxxxx") +
   ylab("Yyyyyy")
 
+## ファセット プロットを分割したもの。セルのような概念
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ class, nrow = 2)
 
+### クロス集計
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_grid(drv ~ cyl)
 
 # 型
 as.factor(5) # ファクター型 idやラベルのようなもの。男を1、女を2としたときに2*3=6ような計算をしないようにfactor型は1つの独立した要素であり、四則演算できない
