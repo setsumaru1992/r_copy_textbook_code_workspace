@@ -3,6 +3,8 @@
 library(tidyverse)
 shidoho_data <- tibble(read_csv("reference_files/shidoho_data.csv"))
 psycho_score <- shidoho_data$psycho_score
+statistics_score_1 <- shidoho_data$statistics_score_1
+statistics_score_2 <- shidoho_data$statistics_score_2
 
 # 標準正規分布を用いた検定
 population_mean_of_null_hypothesis <- 12 # 帰無仮説で使う母平均 (帰無仮説: 母平均 = 12, 対立仮説: 母平均 ≠ 12　今回は母平均=12という帰無仮説の値を使用)
@@ -34,3 +36,25 @@ exist_in_rejection_area # TRUE
 
 ## 用意された関数を使用
 t.test(psycho_score, mu=12)
+
+
+
+# 無相関検定
+## 用意された関数を使わない愚直な書き方
+sample_correlation <- cor(statistics_score_1, statistics_score_2) # 標本相関係数
+
+t_test_statistic_numerator <- sample_correlation * sqrt(length(psycho_score) - 2)
+t_test_statistic_denominator <- sqrt(1 - sample_correlation ^ 2)
+t_test_statistic <- t_test_statistic_numerator / t_test_statistic_denominator
+t_test_statistic # 4.805707 # どこに母相関係数ρ = 0が表現されているかわからないけど、一旦スキップ。相関を計算するときにはそういうものとして受け入れる
+
+degree_of_freedom <- length(psycho_score) - 2 # t検定で使う自由度
+significance_level = 0.05 # 有意水準: 5%
+lower_rejection_area <- qt(significance_level / 2, degree_of_freedom) # -2.100922
+upper_rejection_area <- qt(significance_level / 2, degree_of_freedom, lower.tail = FALSE) # 2.100922
+exist_in_rejection_area <- t_test_statistic < lower_rejection_area | upper_rejection_area < t_test_statistic
+exist_in_rejection_area # TRUE
+
+## 用意された関数を使用
+cor.test(statistics_score_1, statistics_score_2) # alternative hypothesis: true correlation is not equal to 0
+cor.test(statistics_score_1, psycho_score)# これでもtrue出たから、無相関でないことしかチェックできないんだと思う
