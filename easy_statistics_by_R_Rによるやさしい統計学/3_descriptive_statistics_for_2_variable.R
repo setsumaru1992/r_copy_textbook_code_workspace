@@ -11,3 +11,15 @@ covariance # 7.55
 
 ## 用意された関数を使用(不偏分散: 分散計算時にデータ数 - 1で割る)
 cov(statistics_score_1, statistics_score_2) # 7.95
+
+
+# 相関係数(相関に関する値。共分散が測定単位に影響されてしまう弱点を解消)
+cov(
+  statistics_score_1, statistics_score_2) / 
+  (sd(statistics_score_1) * sd(statistics_score_2)
+) # 0.749659
+cor(statistics_score_1, statistics_score_2) # 0.749659
+
+
+
+
