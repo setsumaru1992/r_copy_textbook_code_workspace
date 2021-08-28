@@ -39,7 +39,7 @@ t.test(psycho_score, mu=12)
 
 
 
-# 無相関検定
+# 無相関検定（相関係数の検定）帰無仮説に無相関を設定
 ## 用意された関数を使わない愚直な書き方
 sample_correlation <- cor(statistics_score_1, statistics_score_2) # 標本相関係数
 
@@ -58,3 +58,28 @@ exist_in_rejection_area # TRUE
 ## 用意された関数を使用
 cor.test(statistics_score_1, statistics_score_2) # alternative hypothesis: true correlation is not equal to 0
 cor.test(statistics_score_1, psycho_score)# これでもtrue出たから、無相関でないことしかチェックできないんだと思う
+
+
+
+# カイ二乗検定（独立性の検定）帰無仮説に独立（2変数に連関がないこと）を設定
+## 用意された関数を使わない愚直な書き方
+math <- shidoho_data$math
+statistics <- shidoho_data$statistics
+table(math, statistics)
+
+expected_frequency_zero_zero <- 12 * 14 / 20
+expected_frequency_one_zero <- 12 *6 / 20
+expected_frequency_zero_one <- 8 * 14 / 20
+expected_frequency_one_one <- 8 * 6 / 20
+expected_frequencies <- c(expected_frequency_zero_zero, expected_frequency_one_zero, expected_frequency_zero_one, expected_frequency_one_one)
+
+observation_frequencies <- c(10,2,4,4)
+chi_square_elements <- (observation_frequencies - expected_frequencies)^2 / expected_frequencies 
+chi_square <- sum(chi_square_elements) # 2.539683
+
+upper_rejection_area <- qchisq(0.05, 1, lower.tail = FALSE)
+exist_in_rejection_area <- upper_rejection_area < chi_square
+exist_in_rejection_area # FALSE
+
+## 用意された関数を使用
+chisq.test(table(math, statistics), correct = FALSE)
